@@ -147,3 +147,17 @@ POST http://127.0.0.1:8000/chat
   "session_id": "session-demo"
 }
 ```
+
+### Test 4: Reset Session Memory
+**Request**:
+```http
+DELETE http://127.0.0.1:8000/chat/session-demo
+```
+**Response**:
+```json
+{
+  "message": "Successfully cleared session memory for session ID: session-demo"
+}
+```
+*Note: Any subsequent request to `session-demo` will now start with a completely empty memory context.*
+

@@ -6,8 +6,8 @@ load_dotenv()
 
 # Configuration variables
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-# Default model: gemini-1.5-flash is fast and supports tool calling/chat
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+# Default model: gemini-3.1-flash-lite is fast and supports tool calling/chat
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite")
 
 # Quick verification
 if not GEMINI_API_KEY:

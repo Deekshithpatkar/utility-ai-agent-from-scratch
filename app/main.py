@@ -10,7 +10,7 @@ from app.tools.weather_tool import get_weather
 from app.tools.time_tool import get_current_time
 from app.tools.calculator_tool import calculate
 from app.tools.location_tool import get_location_information
-from app.agent.manual_agent import run_agent
+from app.agent.manual_agent import run_agent, reset_session
 
 app = FastAPI(
     title="Utility AI Agent API",
@@ -20,7 +20,37 @@ app = FastAPI(
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the Utility AI Agent API. Use Postman to test endpoints."}
+    return {
+        "message": "Welcome to the Utility AI Agent API. Below are the available endpoints:",
+        "endpoints": {
+            "GET /": {
+                "description": "Lists all available API endpoints."
+            },
+            "POST /chat": {
+                "description": "Engage with the stateful AI Agent loop.",
+                "body_format": {"message": "str", "session_id": "str (optional)"}
+            },
+            "DELETE /chat/{session_id}": {
+                "description": "Clears the conversation memory context for a given session ID."
+            },
+            "POST /weather": {
+                "description": "Call the Weather Tool directly.",
+                "body_format": {"location": "str"}
+            },
+            "POST /time": {
+                "description": "Call the Current-Time Tool directly.",
+                "body_format": {"location": "str"}
+            },
+            "POST /calculate": {
+                "description": "Call the Calculator Tool directly.",
+                "body_format": {"expression": "str"}
+            },
+            "POST /location": {
+                "description": "Call the Location Tool directly.",
+                "body_format": {"location": "str"}
+            }
+        }
+    }
 
 @app.post("/weather", response_model=WeatherResponse)
 def api_weather(request: WeatherRequest):
@@ -62,3 +92,13 @@ def api_chat(request: ChatRequest):
     """
     result = run_agent(request.message, session_id=request.session_id)
     return ChatResponse(**result)
+
+@app.delete("/chat/{session_id}")
+def api_reset_chat(session_id: str):
+    """
+    Clear session conversation history using standard HTTP DELETE.
+    """
+    existed = reset_session(session_id)
+    if existed:
+        return {"message": f"Successfully cleared session memory for session ID: {session_id}"}
+    return {"message": f"No active memory context found for session ID: {session_id}"}

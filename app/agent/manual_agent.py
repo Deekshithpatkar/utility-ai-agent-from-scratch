@@ -130,3 +130,13 @@ def run_agent(user_query: str, session_id: str = "default_session") -> Dict[str,
         "agent_iterations": state.iteration_count,
         "session_id": session_id
     }
+
+def reset_session(session_id: str) -> bool:
+    """
+    Clears the accumulated message history for a given session ID.
+    Returns True if the session existed and was cleared, False otherwise.
+    """
+    if session_id in SESSION_MEMORY:
+        del SESSION_MEMORY[session_id]
+        return True
+    return False
